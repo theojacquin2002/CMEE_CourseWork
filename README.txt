@@ -10,3 +10,6 @@
 # Data : 
 
 # Authors : Theo Jacquin (tj726@ic.ac.uk)
+
+# AI Usage : 
+Google's AI Overview was used to understand and retrieve Zsh commands. 

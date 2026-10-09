@@ -1,37 +1,27 @@
+Answer Structure:
+# QX. one-line final UNIX command
+-   commands and functions are detailed in bullets
 
-All parts of final one single-line UNIX command are in brackets []
-All final one single-line UNIX command are at the beginning of each Q, indicated by >>
 
 # Q1. find ../data/fasta -type f -print0 | xargs -0 wc -l
-find looks inside the fasta folder (with relative directory)
-type -f restricts to all regular files
--print0 prints their names separated by a null character 
-xargs -0: Reads the incoming null-separated list (thanks to -0, matching with -print0)
+-   find looks inside the fasta folder (with relative directory)
+-   type -f restricts to all regular files
+-   -print0 prints their names separated by a null character 
+-   xargs -0 reads the incoming null-separated list (thanks to -0, matching with -print0)
 
 
 # Q2. tail -n +2 ../data/fasta/e_coli.fasta   
-• tail: Typically looks at the end (the "tail") of a file.
-• -n: Specifies the number of lines to handle.
-• +2: The + sign means that instead of counting backwards from the bottom (e.g., -n 2 means "show the 
-last 2 lines"), the + tells it to count forwards from the top starting at line 2.
+-   tail: Typically looks at the end (the "tail") of a file.
+-   -n specifies the number of lines to handle.
+-   +2 the + sign means that instead of counting backwards from the bottom (e.g., -n 2 means "show the last 2 lines"), the + tells it to count forwards from the top starting at line 2.
 
 
 # Q3. tail -n +2 ../data/fasta/e_coli.fasta | tr -d '\n' | wc
 How to find occurences??
 
 # Q4. tail -n +2 ../data/fasta/e_coli.fasta | tr -d '\n' | grep -o "ATGC" | wc -l
-grep -o groups by the motif we want to isolate
--o (only-matching) flag extracts only the matching pieces of text and prints each individual 
-match onto a brand new line
+-   grep -o groups by the motif we want to isolate
+-   -o (only-matching) flag extracts only the matching pieces of text and prints each individual match onto a brand new line
 
 # Q5. tail -n +2 ../data/fasta/e_coli.fasta | tr -d '\n' | grep -o "[ATGC]" | sort | uniq -c
-
-
-
-
-tabtocsv.sh:
-
-csvtospace.sh: 
-
-tr command performs a direct 1-to-1 character translation
--z evaluates to true if the length of the string is zero
+Can't get to process the formula
