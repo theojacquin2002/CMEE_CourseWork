@@ -9,13 +9,18 @@
 
 input_file="$1"
 
-if [[input_file != *.tsv ]]; then
+if [["$input_file" != *.tsv ]]; then
     echo "Error: Input file must be a .tsv file"
     exit 1
 fi
 
-cat "$input_file" | tr "\t" "," >> "../results/$(basename "$input_file" .tsv).txt"
+mkdir -p ../results || exit 1
 
+output_file="../results/$(basename "$input_file").csv"
 
-exit
-
+if tr '\t' ',' < "$input_file" > "$output_file"; then
+    echo "Output saved to $output_file"
+else
+    echo "Error: conversion failed." 
+    exit 1
+fi
