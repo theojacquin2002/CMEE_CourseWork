@@ -8,8 +8,6 @@ __version__ = '3.14.8'
 import sys
 import doctest # Import the doctest module
 
-if __name__ == "__main__":
-
 def even_or_odd(x=0):
     """Find whether a number x is even or odd.
       

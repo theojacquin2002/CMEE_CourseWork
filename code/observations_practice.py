@@ -7,9 +7,12 @@ def load_observations(path):
 
 def parse_count(count_text):
     isinstance(count_text, str)
-    int(count_text)
     if count_text == "":
         return None
+    if count_text != "":
+        int(count_text)
+
+
     if int(count_text) == int < 0:
         raise ValueError("Count cannot be negative")
     if int(count_text) == int:
