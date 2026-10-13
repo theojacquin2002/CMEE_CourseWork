@@ -14,8 +14,6 @@ if [["$input_file" != *.tsv ]]; then
     exit 1
 fi
 
-mkdir -p ../results || exit 1
-
 output_file="../results/$(basename "$input_file").csv"
 
 if tr '\t' ',' < "$input_file" > "$output_file"; then
