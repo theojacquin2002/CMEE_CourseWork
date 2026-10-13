@@ -40,7 +40,56 @@ def validate_record(
     accepted_ids: set[str],
 ) -> tuple[dict[str, str] | None, list[str]]:
     """Clean one record, or return the reasons it cannot be used."""
-    raise NotImplementedError("Write the checks for one survey record")
+
+    record_id = row.get("record_id").strip()
+    if not record_id:
+        reasons.append("missing record_id")
+    if len(record_id) != 5 or not record_id.startswith("ST") or not record_id[2:].isdigit():
+        reasons.append("invalid record_id")
+    if record_id in accepted_ids:
+        reasons.append("duplicate record_id")
+
+    location = row.get("location").strip().lower()
+    locations = {
+        "silwood bottom": "Silwood Bottom",
+        "nash's field": "Nash's Field",
+        "manor house": "Manor House",
+        "reactor wood": "Reactor Wood",
+    }
+    if location not in locations.lower():
+        reasons.append("invalid location")
+
+    genus = row.get("genus").strip().lower()
+    genera = {
+        "quercus": "Quercus",
+        "acer": "Acer",
+        "betula": "Betula",
+        "fagus": "Fagus",
+        "fraxinus": "Fraxinus",
+    }
+    if genus not in genera.lower():
+        reasons.append("invalid genus")
+
+    species = row.get("species").strip().lower()
+    species_names = {
+        "robur": "robur",
+        "petraea": "petraea",
+        "pseudoplatanus": "pseudoplatanus",
+        "pendula": "pendula",
+        "sylvatica": "sylvatica",
+        "excelsior": "excelsior",
+    }
+    
+    valid_pairs = {
+        ("Quercus", "robur"),
+        ("Quercus", "petraea"),
+        ("Acer", "pseudoplatanus"),
+        ("Betula", "pendula"),
+        ("Fagus", "sylvatica"),
+        ("Fraxinus", "excelsior"),
+    }
+    
+    
 
 
 def process_records(

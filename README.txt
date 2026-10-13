@@ -13,3 +13,8 @@
 
 # AI Usage : 
 Google's AI Overview was used to understand and retrieve Zsh commands. 
+
+
+# 13 October 2026: Tree-survey plan
+validate_record receives one input as a row, cleans/checks each field of data, then 
+matches the error reason, and returns either a cleaned record or None (+ reason).
