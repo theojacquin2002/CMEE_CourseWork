@@ -1,7 +1,0 @@
-.DS_Store
-.Rhistory
-.RData
-.Ruserdata
-__pycache__/
-*.py[cod]
-.vscode/
