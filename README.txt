@@ -2,20 +2,15 @@
     Build, manage and learn to use a GitHub repository 
 
 # Project structure : Root directory is CMEE_CourseWork
-
-# Requirements : Languages include Zsh, python 
-
-# Usage : 
-
-# Data : 
-
+# Requirements : Languages include Zsh, python, R
 # Authors : Theo Jacquin (tj726@ic.ac.uk)
-
-# AI Usage : 
-Google's AI Overview was used to understand and retrieve Zsh commands. 
+# AI Usage : Google's AI Overview was used to understand and retrieve Zsh commands. 
 
 
-# Assignment 2: Tree-survey python practical (18.10.26; 11:53)
+### Assignment 1: Zsh terminal practical
+
+
+### Assignment 2: Tree-survey python practical (18.10.26; 11:53)
     ## Objective
 This project cleans and validates a Silwood tree-survey CSV. It validates  records, a 
 report of rejected ones counts of accepted oak species.
@@ -34,11 +29,10 @@ The script reads data/silwood_trees_raw.csv and creates these files in results/:
 - oak_species_counts.csv: accepted oak records counted by species
 The results directory is created automatically if it does not exist.
 
-
     ## Pseudocode
 
 1. load_records
-   - Read the CSV and check  its header
+   - Read the CSV and check its header
    - Return its rows as dictionaries.
 2. process_records
    - Start with empty lists for accepted records and rejected-row issues.
@@ -64,3 +58,24 @@ Theo Jacquin
     ## AI usage
 Google AI Overview was used to understand Zsh commands. It was further used to help 
 identify and correct issues in the Python process_records code (which was quite confusing)
+
+
+
+### Assignment 3: Tree height R practical (22.10.26; 11:49)
+    ## Objective
+This project validates the values of a trees.csv file, and applies a height-estimating 
+function to each row. It writes the final output as a new .csv in results/TreeHts.csv
+
+    ## Project structure
+- code/TreeHeight.R: running script
+- data/trees.csv: input data file
+- results/TreeHts.csv : output file
+
+   ## Running overview
+Script runs on R. From the repository root (CMEE_CourseWork), run:
+    Rscript code/TreeHeight.R
+The script reads data/trees.csv and creates this file in results/:
+- TreeHts.csv
+The results directory is created automatically if it does not exist.
+
+   ## Pseudocode
