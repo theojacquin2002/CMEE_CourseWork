@@ -10,9 +10,8 @@
 # OUTPUT
 # The heights of the tree, same units as "distance"
 
-data <- read.csv("data/trees.csv", colClasses = "character", na.strings = "", check.names = FALSE)
-data$Distance.m <- as.numeric(as.character(data$Distance.m))
-data$Angle.degrees <- as.numeric(as.character(data$Angle.degrees))
+data <- read.csv("data/trees.csv", colClasses = "character", 
+    na.strings = "", check.names = FALSE)
 
 #head(data)
 
@@ -21,6 +20,7 @@ if (!all(required_cols %in% names(data))) {
   stop("Error: The input data must have columns 'Species', 'Distance', and 'Angle'.")
 }
 x = 1
+
 for (i in data$Distance.m) {
     if (!is.finite(i)) {
         stop(paste0("Error: The 'Distance' column must contain only finite numeric values. Row ", x, " contains a non-finite value."))
