@@ -13,6 +13,7 @@
 data <- read.csv("data/trees.csv", colClasses = "character", 
     na.strings = "", check.names = FALSE)
 
+
 #head(data)
 
 required_cols <- c("Species", "Distance.m", "Angle.degrees")
