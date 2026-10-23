@@ -79,3 +79,23 @@ The script reads data/trees.csv and creates this file in results/:
 The results directory is created automatically if it does not exist.
 
    ## Pseudocode
+
+
+### Pound Hill Practical
+This script assesses the validity of the pound hill dataset, then groups data by plot to
+calculate mean plot richness. This allows to compare mean richness between treatments. 
+
+    ## Project structure
+- code/pound_hill_analysis.R: running script
+- data/pound_hill_data.csv: input data file
+- data/pound_hill_meta_data.csv : metadata file (read.csv2)
+- results/pound_hill_plot_richness.csv: plot-level summary containing Cultivation, Block, Plot and MeanRichness
+- results/pound_hill_plot_richness.pdf: figure comparing plot-level mean richness among the three cultivation treatments
+
+   ## Running overview
+Script runs on R. From the repository root (CMEE_CourseWork), run:
+    Rscript code/pound_hill_analysis.R
+The script reads data/pound_hill_data.csv and data/pound_hill_meta_data.csv, creates this file in results/:
+- pound_hill_plot_richness.csv
+- pound_hill_plot_richness.pdf
+The results directory is created automatically if it does not exist.
