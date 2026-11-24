@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 import csv
+import math
 from pathlib import Path
 from typing import Iterable
 
@@ -147,8 +148,8 @@ def validate_record(
 
             reasons.append(f"invalid {field}") # if the value in field is not floatable
             continue
-        if value == float("inf") or value == float("-inf"): # check for Infinites
-            reasons.append(f"infinite value for {field}")
+        if not math.isfinite(value):
+            reasons.append(f"invalid {field}")
             continue
 
         numbers[field] = value
@@ -161,7 +162,8 @@ def validate_record(
 
     if reasons:
         return None, reasons
-    return {
+
+    clean_record = {
         "record_id": record_id,
         "location": clean_location,
         "genus": clean_genus,
@@ -170,28 +172,34 @@ def validate_record(
         "angle_degrees": str(numbers["angle_degrees"]),
     }
 
+    return clean_record, []
+
+
 
 def process_records(
     rows: Iterable[dict[str, str]],
-) -> tuple[list[dict[str, str]], list[dict[str, str]]]: # dont understand what this tuple does/means
+) -> tuple[list[dict[str, str]], list[dict[str, str]]]:
     """Sort records into accepted rows and issue reports."""
-    clean_records = []
-    issues_rows = []
-    accepted_ids = set()
+    clean_records: list[dict[str, str]] = []
+    issues_rows: list[dict[str, str]] = []
+    accepted_ids: set[str] = set()
 
-    for source_row in rows:
-        record, reasons = validate_record(source_row, accepted_ids) # validate_record returns a tuple of (record, reasons)
-    if record is None:
-        issues_rows.append(
-            {
-                "source_row": str(source_row), # autocompleted by helper
-                "record_id": source_row.get("record_id", ""),
-                "reasons": "; ".join(reasons),
-            }
-        )
-    else:
-        clean_records.append(record)
-        accepted_ids.add(record["record_id"])
+    for source_row, row in enumerate(rows, start=2):
+        record, reasons = validate_record(row, source_row, accepted_ids)
+
+        if record is None:
+            issues_rows.append(
+                {
+                    "source_row": str(source_row),
+                    "record_id": (row.get("record_id") or "").strip(),
+                    "reasons": "; ".join(reasons),
+                }
+            )
+        else:
+            clean_records.append(record)
+            accepted_ids.add(record["record_id"])
+
+    clean_records.sort(key=lambda record: record["record_id"])
     return clean_records, issues_rows
 
 def summarise_oaks(clean_records: Iterable[dict[str, str]]) -> list[dict[str, str]]: #  Iterable
