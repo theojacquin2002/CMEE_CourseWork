@@ -1,76 +1,142 @@
-# This function calculates heights of trees given distance of each tree 
-# from its base and angle to its top, using  the trigonometric formula 
-#
-# height = distance * tan(radians)
-#
-# ARGUMENTS
-# degrees:   The angle of elevation of tree
-# distance:  The distance from base of tree (e.g., meters)
-#
-# OUTPUT
-# The heights of the tree, same units as "distance"
+#!/usr/bin/env Rscript
 
+# Generalized tree-height calculation.
+# Run from the project root:
+# Rscript code/get_TreeHeight.R data/trees.csv
 
-data <- commandArgs(trailingOnly = TRUE)
-required_headers <- c("id", "timestamp", "value")
+args <- commandArgs(trailingOnly = TRUE)
 
-if (length(data) == 0) {
+if (length(args) != 1) {
   stop(
-    "Error: Missing required argument.\n",
-    "Usage: Rscript TreeHeight.R <path_to_csv_file>\n"
-  )
-} else if (length(data) > 1) {
-  stop(
-    sprintf("Error: Too many arguments provided (Expected %d, got %d).\n", EXPECTED_ARGS, length(args)),
-    "Usage: Rscript TreeHeight.R <path_to_csv_file>\n"
+    "Error: provide exactly one CSV input path.\n",
+    "Usage: Rscript code/get_TreeHeight.R <input.csv>",
+    call. = FALSE
   )
 }
 
-#head(data)
+input_file <- args[[1]]
 
-required_cols <- c("Species", "Distance.m", "Angle.degrees")
-if (!all(required_cols %in% names(data))) {
-  stop("Error: The input data must have columns 'Species', 'Distance', and 'Angle'.")
-}
-x = 1
-
-for (i in data$Distance.m) {
-    if (!is.finite(i)) {
-        stop(paste0("Error: The 'Distance' column must contain only finite numeric values. Row ", x, " contains a non-finite value."))
-    }
-    else {
-        if (!(0 < i && i < 100)) {
-            stop(paste0("Error: The 'Distance' column must contain only values between 0 and 100. Row ", x, " contains a non-numeric value."))
-        }
-    }
-    x = x + 1
-}
-y = 1
-for (i in data$Angle.degrees) {
-    if (!is.finite(i)) {
-        stop(paste0("Error: The 'Angle' column must contain only finite numeric values. Row ", y, " contains a non-finite value."))
-    }
-    else {
-        if (!(0 < i && i < 90)) {
-            stop(paste0("Error: The 'Angle' column must contain only values between 0 and 90. Row ", y, " contains a non-numeric value."))
-        }
-    }
-    y = y + 1
+if (!grepl("\\.csv$", basename(input_file), ignore.case = TRUE)) {
+  stop("Error: the input file must have a .csv extension.", call. = FALSE)
 }
 
+if (!file.exists(input_file) ||
+    dir.exists(input_file) ||
+    file.access(input_file, mode = 4) != 0) {
+  stop(
+    sprintf("Error: input file does not exist or cannot be read: %s", input_file),
+    call. = FALSE
+  )
+}
+
+tree_data <- tryCatch(
+  read.csv(
+    input_file,
+    stringsAsFactors = FALSE,
+    colClasses = "character",
+    check.names = FALSE
+  ),
+  error = function(error) {
+    stop(
+      sprintf("Error: could not read CSV '%s': %s",
+              input_file, conditionMessage(error)),
+      call. = FALSE
+    )
+  }
+)
+
+required_columns <- c("Species", "Distance.m", "Angle.degrees")
+
+if (!identical(names(tree_data), required_columns)) {
+  stop(
+    sprintf(
+      "Error: expected columns in this order: %s. Found: %s.",
+      paste(required_columns, collapse = ", "),
+      paste(names(tree_data), collapse = ", ")
+    ),
+    call. = FALSE
+  )
+}
+
+distance_m <- suppressWarnings(as.numeric(tree_data$Distance.m))
+angle_degrees <- suppressWarnings(as.numeric(tree_data$Angle.degrees))
+
+bad_distance <- which(!is.finite(distance_m))
+if (length(bad_distance) > 0) {
+  stop(
+    sprintf(
+      "Error: Distance.m must contain finite numbers. Invalid data row(s): %s.",
+      paste(bad_distance, collapse = ", ")
+    ),
+    call. = FALSE
+  )
+}
+
+bad_angle <- which(!is.finite(angle_degrees))
+if (length(bad_angle) > 0) {
+  stop(
+    sprintf(
+      "Error: Angle.degrees must contain finite numbers. Invalid data row(s): %s.",
+      paste(bad_angle, collapse = ", ")
+    ),
+    call. = FALSE
+  )
+}
+
+bad_distance_range <- which(distance_m <= 0 | distance_m > 100)
+if (length(bad_distance_range) > 0) {
+  stop(
+    sprintf(
+      "Error: Distance.m must be greater than 0 and at most 100. Invalid data row(s): %s.",
+      paste(bad_distance_range, collapse = ", ")
+    ),
+    call. = FALSE
+  )
+}
+
+bad_angle_range <- which(angle_degrees <= 0 | angle_degrees >= 90)
+if (length(bad_angle_range) > 0) {
+  stop(
+    sprintf(
+      "Error: Angle.degrees must be greater than 0 and less than 90. Invalid data row(s): %s.",
+      paste(bad_angle_range, collapse = ", ")
+    ),
+    call. = FALSE
+  )
+}
+
+# Define the vectorised tree-height function used by this script
 TreeHeight <- function(degrees, distance) {
-    radians <- degrees * pi / 180
-    height <- distance * tan(radians)
-    return(height)
+  radians <- degrees * pi / 180
+  distance * tan(radians)
 }
 
-height_data <- data
-height_data$height_m <- TreeHeight(height_data$Angle.degrees, height_data$Distance.m)
-head(height_data)
-row.names(height_data) == row.names(data)
-# how to check for row order?
+height_data <- tree_data
 
+# Temporarily uncomment browser() here for the interactive debugging exercise.
+# browser()
+height_data$height_m <- TreeHeight(
+  degrees = angle_degrees,
+  distance = distance_m
+)
 
-write.csv(height_data, paste0("results/", commandArgs(trailingOnly = TRUE), "_treeheights.csv"))
-message("Tree heights calculated and saved to", paste0("results/", commandArgs(trailingOnly = TRUE), "_treeheights.csv"))
+if (!dir.exists("results")) {
+  dir.create("results", recursive = TRUE, showWarnings = FALSE)
+}
+if (!dir.exists("results")) {
+  stop("Error: could not create the results directory.", call. = FALSE)
+}
 
+input_basename <- basename(input_file)
+input_stem <- sub("\\.csv$", "", input_basename, ignore.case = TRUE)
+output_file <- file.path(
+  "results",
+  paste0(input_stem, "_treeheights.csv")
+)
+
+write.csv(height_data, output_file, row.names = FALSE)
+
+message(
+  sprintf("Saved %d tree-height records to %s",
+          nrow(height_data), output_file)
+)
