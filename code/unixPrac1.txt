@@ -16,12 +16,17 @@ Answer Structure:
 -   +2 the + sign means that instead of counting backwards from the bottom (e.g., -n 2 means "show the last 2 lines"), the + tells it to count forwards from the top starting at line 2.
 
 
-# Q3. tail -n +2 ../data/fasta/e_coli.fasta | tr -d '\n' | wc
-How to find occurences??
+# Q3. tail -n +2 ../data/fasta/e_coli.fasta | tr -d '\r\n' | wc -c
+- tail -n +2 removes the header by printing from line 2 onwards.
+- tr -d '\r\n' removes line-ending characters, joining the wrapped sequence lines without adding spaces.
+- wc -c counts the remaining bytes
 
 # Q4. tail -n +2 ../data/fasta/e_coli.fasta | tr -d '\n' | grep -o "ATGC" | wc -l
 -   grep -o groups by the motif we want to isolate
 -   -o (only-matching) flag extracts only the matching pieces of text and prints each individual match onto a brand new line
 
-# Q5. tail -n +2 ../data/fasta/e_coli.fasta | tr -d '\n' | grep -o "[ATGC]" | sort | uniq -c
-Can't get to process the formula
+# Q5. echo $(cat ../data/fasta/e_coli.fasta | tail -n +2 | grep -o '[AT]' | wc -l) / $(cat ../data/fasta/e_coli.fasta | tail -n +2 | grep -o '[GC]' | wc -l) | bc -l
+-   cat ../data/fasta/e_coli.fasta reads the FASTA file. tail -n +2 skips the header and passes the sequence lines onward.
+-   grep -o '[AT]' prints each uppercase A or T separately. wc -l counts them, giving the numerator, A + T.
+-   The second pipeline does the same for uppercase G and C, giving the denominator, G + C.
+-   echo puts the two counts into a division expression, and bc -l calculates the ratio as a decimal.

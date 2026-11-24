@@ -1,38 +1,42 @@
 #!/bin/bash
-# Author: Theo Jacquin tj726@ic.ac.uk
+# Author: Theo Jacquin
 # Script: csvtospace.sh
-# Usage: ./csvtospace.sh <input_file> 
-# Desc: substitute the commas in the files with tabs
-#       saves the output into a .tsv file
-# Arguments: 1-> comma delimited file
-# Date: 8 Oct 2015
+# Usage: bash code/csvtospace.sh <input_file.csv>
+# Description: Replace commas with spaces and save the output in results/.
+# This simple conversion does not parse quoted CSV fields.
 
-input_file="$1"
-
-if [["$input_file" != *.csv ]]; then
-    echo "Error: Input file must be a .csv file"
+if [[ $# -ne 1 ]]; then
+    echo "Usage: bash code/csvtospace.sh <input_file.csv>" >&2
     exit 1
 fi
 
-if [[ -z "$1" ]]; then
-    echo "Error: No input file specified." 
-    exit 2
+input_file="$1"
+
+if [[ "$input_file" != *.csv ]]; then
+    echo "Error: input file must have a .csv extension." >&2
+    exit 1
 fi
 
 if [[ ! -f "$input_file" || ! -r "$input_file" ]]; then
-    echo "Error: Input file '$input_file' is missing or unreadable."
-    exit 3
+    echo "Error: input file does not exist, is not a regular file, or cannot be read: $input_file" >&2
+    exit 1
 fi
 
-output_file="../results/$(basename "$input_file" .csv).txt"
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+project_root="$(cd "$script_dir/.." && pwd)"
+results_dir="$project_root/results"
 
-if tr ',' '\t' < "$input_file" >> "$output_file"; then
-    echo "Success: Processed $input_file -> $output_file"
+if ! mkdir -p "$results_dir"; then
+    echo "Error: could not create results directory: $results_dir" >&2
+    exit 1
+fi
+
+input_filename="${input_file##*/}"
+output_file="$results_dir/$input_filename.txt"
+
+if tr ',' ' ' < "$input_file" > "$output_file"; then
+    echo "Output saved to $output_file"
 else
-    echo "Error: Failed to process or write the data." 
-    exit 4
+    echo "Error: conversion failed." >&2
+    exit 1
 fi
-
-# tr command performs a direct 1-to-1 character translation
-# -z evaluates to true if the length of the string is zero
-
