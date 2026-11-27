@@ -2,30 +2,31 @@ import csv
 
 
 def load_observations(path):
+    """Load observation rows as dictionaries."""
     with open(path, newline="", encoding="utf-8") as stream:
         return list(csv.DictReader(stream))
 
+
 def parse_count(count_text):
-    isinstance(count_text, str)
+    """Convert non-negative count text to an integer; return None if missing."""
+    if not isinstance(count_text, str):
+        raise ValueError("count must be text")
+
     if count_text == "":
         return None
-    if count_text != "":
-        int(count_text)
 
+    try:
+        count = int(count_text)
+    except ValueError as error:
+        raise ValueError("count must be an integer") from error
 
-    if int(count_text) == int < 0:
-        raise ValueError("Count cannot be negative")
-    if int(count_text) == int:
-        return int
-    if count_text == str:
-        raise ValueError("Count cannot be a string")
+    if count < 0:
+        raise ValueError("count cannot be negative")
 
+    return count
 
-
-print(parse_count(22))
 
 if __name__ == "__main__":
     rows = load_observations("data/bootcamp_observations.csv")
     print(rows[0])
     print(rows[2])
-
