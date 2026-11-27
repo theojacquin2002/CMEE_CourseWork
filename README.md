@@ -9,6 +9,8 @@ Build, manage and learn to use a GitHub repository. This project contains UNIX a
 - `results/`: generated files, created by scripts when needed
 - `sandbox/`: disposable test files
 
+Generated files under results/, disposable test files under sandbox/, Python cache files, and local environment files are excluded by .gitignore. Supplied inputs under data/ and source files under code/ remain tracked.
+
 Run commands from the repository root unless a section says otherwise. Keep supplied input data unchanged. Generated results and disposable test files can be recreated and should not be committed.
 
 # Requirements
@@ -76,6 +78,8 @@ bash code/csvtospace.sh data/temperatures/1800.csv
 Check that commas become spaces, repeated commas become repeated spaces, and the input remains unchanged. Run the command again and confirm the output is replaced, not appended. Also test disposable files in `sandbox/` with an empty field, a path containing spaces, a missing argument and a nonexistent input. Invalid inputs should return a non-zero status and print an error.
 
 The supplied converter commands completed successfully and reported outputs under `results/`.
+
+After formative feedback, I corrected the spacing in the Bash [[ ... ]] tests. I revised csvtospace.sh to replace commas with spaces, preserve repeated separators, write to results/<input-filename>.txt, replace the output on reruns, and create results/ when needed. I also checked its argument and input validation. I completed the FASTA length and AT/GC ratio calculations in unixPrac1.txt and explained why the numbered FASTA files have one fewer newline than displayed lines. The supplied tabtocsv.sh and csvtospace.sh commands both ran successfully on their example inputs.
 
 ## Assignment 2: Tree-survey Python practical
 
@@ -201,7 +205,7 @@ The script creates `results/` if needed. Check that both files are created. Trac
 
 ### Formative feedback and checks
 
-The formative feedback noted that the analysis separates plot identifiers from species counts, checks counts, calculates richness from species presence, and averages quadrat richness within plots. It also identified the need for an explicit PDF-saving step.
+After formative feedback, I added an explicit step to save the plot as results/pound_hill_plot_richness.pdf. I reran the analysis from the project root and checked that it created both the summary CSV and the PDF. The run reported richness for 59 quadrats and mean richness for 12 plots. I traced the March, block a, plot 3, quadrat Q1: it had richness 7, and the six quadrat richness values gave a plot mean of 6.33. I inspected the PDF labels and treatment comparison. The plotted value is mean quadrat species richness per plot, which allows comparison among cultivation treatments.
 
 The script ran and printed richness values for 59 quadrats and mean richness for 12 plots. For example, March, block `a`, plot `3`, quadrat `Q1` had richness 7; that plot’s mean richness was 6.33. Confirm that the CSV and PDF were created, then inspect the PDF before recording that check as complete.
 

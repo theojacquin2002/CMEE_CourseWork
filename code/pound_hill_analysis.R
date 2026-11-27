@@ -65,7 +65,7 @@ write.csv(plot_richness, "results/pound_hill_plot_richness.csv", row.names = FAL
 quadrat_richness
 plot_richness
 
-ggplot(plot_richness, aes(x = Plot, y = MeanRichness, colour = Cultivation)) +
+pound_hill_plot <- ggplot(plot_richness, aes(x = Plot, y = MeanRichness, colour = Cultivation)) +
   geom_point(size = 3) +
   labs(
     title = "Mean plant species richness per plot",
@@ -73,3 +73,10 @@ ggplot(plot_richness, aes(x = Plot, y = MeanRichness, colour = Cultivation)) +
     y = "Mean species richness"
   ) +
   theme_minimal()
+
+ggplot2::ggsave(
+  filename = "results/pound_hill_plot_richness.pdf",
+  plot = pound_hill_plot,
+  width = 8,
+  height = 6
+)

@@ -1,0 +1,19 @@
+cat > .gitignore <<'EOF'
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+
+# Generated outputs and disposable tests
+/results/
+/sandbox/
+/Rplots.pdf
+EOF
