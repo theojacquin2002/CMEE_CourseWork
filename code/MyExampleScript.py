@@ -1,5 +1,10 @@
-#!/bin/bash
+"""A first example of saving and running Python code."""
 
-greeting="Hello"
-user_name=$USER
-printf '%s %s\n' "$greeting" "$user_name"
+
+def square(x):
+    """Return the square of x."""
+    return x * x
+
+
+result = square(2)
+print(f"The square of 2 is {result}")
